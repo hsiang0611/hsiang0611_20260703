@@ -157,6 +157,27 @@ td.s{color:var(--ink-soft);font-size:12.5px}
 .chk input{width:21px;height:21px;accent-color:var(--cyan);flex-shrink:0}
 .chk.on span{text-decoration:line-through;color:var(--ink-soft)}
 
+/* ===== 備忘欄位・筆記・花費 ===== */
+.field-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.field-row:last-of-type{border-bottom:none}
+.field-row .fk{flex:0 0 88px;font-weight:700;color:var(--navy);font-size:14px}
+.field-row input{flex:1;min-width:0;border:1.5px dashed var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:14px;color:var(--ink);background:#FBFDFE}
+.field-row input:focus{outline:none;border:1.5px solid var(--cyan);background:#fff}
+#tripNote{width:100%;min-height:130px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;line-height:1.7;color:var(--ink);background:#FBFDFE;resize:vertical}
+#tripNote:focus{outline:none;border-color:var(--cyan);background:#fff}
+.save-hint{font-size:11px;color:var(--ok);margin-top:5px;min-height:15px}
+.exp-quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.exp-quick button{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--cyan);color:var(--cyan);background:#fff;border-radius:999px;padding:5px 11px;cursor:pointer}
+.exp-input{display:flex;gap:8px;margin-bottom:6px}
+.exp-input input{border:1.5px dashed var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:14px;background:#FBFDFE}
+.exp-input input:focus{outline:none;border:1.5px solid var(--cyan);background:#fff}
+.exp-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.exp-row .n{flex:1}
+.exp-row .a{font-weight:700;color:var(--navy)}
+.exp-row .del{border:none;background:none;color:var(--alert);font-size:16px;padding:2px 8px;cursor:pointer}
+.exp-total{display:flex;justify-content:space-between;font-weight:900;color:var(--navy);padding-top:10px;font-size:16px}
+.rush{display:none;margin-top:8px;background:#FDEAE3;color:var(--alert);font-size:13px;font-weight:700;border-radius:10px;padding:7px 10px}
+
 .foot{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:26px}
 </style>
 </head>
@@ -173,6 +194,7 @@ td.s{color:var(--ink-soft);font-size:12.5px}
   <div class="title" id="nowTitle">載入中…</div>
   <div class="sub" id="nowSub"></div>
   <div class="count" id="nowCount"></div>
+  <div class="rush" id="rushChip"></div>
 </div>
 
 <main>
@@ -225,7 +247,11 @@ td.s{color:var(--ink-soft);font-size:12.5px}
   <div class="info-row"><div class="k">台中停車</div><div class="v">🅿️ P1 立體停車場 50元/時、當日上限 350元（最方便）<br>💰 五都日出停車場 當日計次 120元，車牌辨識、步行約8–10分</div></div>
   <div class="info-row"><div class="k">交通方式</div><div class="v">🚇 捷運紅線 左營(R16)→三多商圈(R8) 約20分＋步行約12分<br>🚕 計程車 左營→醫院 約25分（約 NT$300）</div></div>
   <div class="info-row"><div class="k">聯絡人</div><div class="v">顏正婷 主任<br><a href="tel:0227423636">📞 (02)2742-3636</a>・<a href="mailto:rha89106@gmail.com">✉️ rha89106@gmail.com</a></div></div>
-  <div style="margin-top:12px"><a class="btn solid" id="icsBtn" href="#">📅 加入手機行事曆</a></div>
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <a class="btn solid" id="icsBtn" href="#">📅 加入手機行事曆</a>
+    <button class="btn cyan" id="copyAddr" style="font:inherit;cursor:pointer">📋 複製醫院地址</button>
+    <a class="btn" href="tel:55688">🚕 叫車 55688</a>
+  </div>
 </section>
 
 <!-- 檢查清單 -->
@@ -237,6 +263,44 @@ td.s{color:var(--ink-soft);font-size:12.5px}
   <label class="chk"><input type="checkbox" data-k="c4"><span>筆記工具（記錄各院 AI 應用重點）</span></label>
   <label class="chk"><input type="checkbox" data-k="c5"><span>悠遊卡／一卡通（搭捷運）</span></label>
   <label class="chk"><input type="checkbox" data-k="c6"><span>雨具（依上方天氣預報決定）</span></label>
+</section>
+
+<!-- 票券・車位備忘 -->
+<div class="sec-title">票券・車位備忘</div>
+<section class="card">
+  <div class="field-row"><div class="fk">去程車次</div><input data-f="f1" placeholder="車次／車廂／座位，例：0819・5車12A"></div>
+  <div class="field-row"><div class="fk">回程車次</div><input data-f="f2" placeholder="車次／車廂／座位"></div>
+  <div class="field-row"><div class="fk">停車位置</div><input data-f="f3" placeholder="例：P1 3F B區 152（或直接用上方拍照）"></div>
+  <div class="save-hint" id="fieldHint"></div>
+</section>
+
+<!-- 活動筆記 -->
+<div class="sec-title">活動筆記</div>
+<section class="card">
+  <textarea id="tripNote" placeholder="聽講重點速記（回來寫出差報告用）：&#10;・生成式AI系統架構（阮綜合 資訊室 陳保慶主任）&#10;・AI智能護理紀錄（護理部 江秀珠主任）&#10;・AI專師病歷書寫（吳諄怡副組長）&#10;・生成式AI醫學教育（陳昱甫主任）&#10;・院區參訪觀察、可帶回院內評估的做法…"></textarea>
+  <div class="save-hint" id="noteHint"></div>
+  <div style="margin-top:6px"><a class="btn cyan" id="shareNote" href="#">📤 匯出筆記</a></div>
+</section>
+
+<!-- 出差花費 -->
+<div class="sec-title">出差花費（報帳用）</div>
+<section class="card">
+  <div class="exp-quick">
+    <button data-n="高鐵去程" data-a="790">🚄 去程</button>
+    <button data-n="高鐵回程" data-a="790">🚄 回程</button>
+    <button data-n="捷運" data-a="35">🚇 捷運</button>
+    <button data-n="計程車" data-a="300">🚕 計程車</button>
+    <button data-n="停車費" data-a="120">🅿️ 停車</button>
+    <button data-n="餐費" data-a="150">🍜 餐費</button>
+  </div>
+  <div class="exp-input">
+    <input id="expName" placeholder="項目" style="flex:1;min-width:0">
+    <input id="expAmt" placeholder="金額" inputmode="numeric" style="width:80px">
+    <button class="btn solid" id="expAdd" style="font:inherit;cursor:pointer;border-radius:10px">＋ 加入</button>
+  </div>
+  <div id="expList"></div>
+  <div class="exp-total"><span>合計</span><span class="num" id="expTotal">NT$ 0</span></div>
+  <div class="w-note">快速鈕金額為預估值，點選後可先修改再加入；資料存在手機裡，回來報帳直接照抄 ✅</div>
 </section>
 
 <div class="foot">※ 主辦單位保有調整變更之權利<br>頁面時間自動追蹤當前行程・清單勾選會自動儲存<br><span style="display:inline-block;margin-top:8px;color:var(--navy);font-weight:700">© 2026 義翔所有</span></div>
@@ -303,6 +367,13 @@ function update(){
       else if(nowMin>=toMin(it.s)) el.classList.add("now");
     }
   });
+
+  /* 回程趕車提醒：16:00–18:00 顯示 */
+  const rush=document.getElementById("rushChip");
+  if(today===EVENT_DATE && nowMin>=960 && nowMin<1080){
+    rush.style.display="block";
+    rush.textContent="⏰ 回程高鐵 18:00 發車，剩 "+fmtDur(1080-nowMin)+"・市區→左營請預留約40分";
+  }else{rush.style.display="none";}
 
   if(today<EVENT_DATE){
     const dep=new Date(EVENT_DATE+"T08:00:00");
@@ -385,6 +456,65 @@ document.getElementById("icsBtn").addEventListener("click",function(e){
   a.download="醫療AI新紀元_0703.ics";
   document.body.appendChild(a);a.click();a.remove();
 });
+
+/* ===== 通用：儲存提示與複製 ===== */
+function flash(id){const el=document.getElementById(id);el.textContent="✓ 已自動儲存";clearTimeout(el._t);el._t=setTimeout(()=>el.textContent="",1600);}
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);
+  const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
+  document.execCommand("copy");ta.remove();return Promise.resolve();
+}
+
+/* ===== 票券・車位備忘 ===== */
+document.querySelectorAll(".field-row input").forEach(inp=>{
+  const k="kh0703_f_"+inp.dataset.f;
+  try{const v=localStorage.getItem(k);if(v)inp.value=v;}catch(e){}
+  inp.addEventListener("input",()=>{try{localStorage.setItem(k,inp.value);}catch(e){}flash("fieldHint");});
+});
+
+/* ===== 活動筆記 ===== */
+const noteEl=document.getElementById("tripNote");
+try{noteEl.value=localStorage.getItem("kh0703_note")||"";}catch(e){}
+noteEl.addEventListener("input",()=>{try{localStorage.setItem("kh0703_note",noteEl.value);}catch(e){}flash("noteHint");});
+document.getElementById("shareNote").addEventListener("click",function(e){
+  e.preventDefault();
+  const text="【醫療AI新紀元 活動筆記】2026/07/03 阮綜合醫院\n\n"+noteEl.value;
+  if(navigator.share){navigator.share({text}).catch(()=>{});}
+  else{copyText(text).then(()=>{this.textContent="✓ 已複製到剪貼簿";setTimeout(()=>this.textContent="📤 匯出筆記",1800);});}
+});
+
+/* ===== 複製醫院地址 ===== */
+document.getElementById("copyAddr").addEventListener("click",function(){
+  copyText("高雄市苓雅區成功一路162號 阮綜合醫院").then(()=>{
+    const o="📋 複製醫院地址";this.textContent="✓ 已複製";setTimeout(()=>this.textContent=o,1500);
+  });
+});
+
+/* ===== 出差花費記錄 ===== */
+let EXP=[];try{EXP=JSON.parse(localStorage.getItem("kh0703_exp")||"[]");}catch(e){EXP=[];}
+const esc=s=>String(s).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;","\"":"&quot;"}[c]));
+function renderExp(){
+  const box=document.getElementById("expList");
+  box.innerHTML=EXP.map((x,i)=>`<div class="exp-row"><span class="n">${esc(x.n)}</span><span class="a num">NT$ ${Number(x.a).toLocaleString()}</span><button class="del" data-i="${i}" aria-label="刪除">✕</button></div>`).join("");
+  const tot=EXP.reduce((s,x)=>s+(Number(x.a)||0),0);
+  document.getElementById("expTotal").textContent="NT$ "+tot.toLocaleString();
+  box.querySelectorAll(".del").forEach(b=>b.addEventListener("click",()=>{EXP.splice(Number(b.dataset.i),1);saveExp();}));
+}
+function saveExp(){try{localStorage.setItem("kh0703_exp",JSON.stringify(EXP));}catch(e){}renderExp();}
+document.querySelectorAll(".exp-quick button").forEach(b=>b.addEventListener("click",()=>{
+  document.getElementById("expName").value=b.dataset.n;
+  document.getElementById("expAmt").value=b.dataset.a;
+  document.getElementById("expAmt").focus();
+}));
+document.getElementById("expAdd").addEventListener("click",()=>{
+  const n=document.getElementById("expName").value.trim();
+  const a=parseInt(document.getElementById("expAmt").value,10);
+  if(!n||!a||a<0)return;
+  EXP.push({n,a});
+  document.getElementById("expName").value="";document.getElementById("expAmt").value="";
+  saveExp();
+});
+renderExp();
 </script>
 </body>
 </html>
