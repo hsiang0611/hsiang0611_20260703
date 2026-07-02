@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#123C69">
+<title>7/3 高雄・醫療AI新紀元｜一日行程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF2F7;
+  --card:#FFFFFF;
+  --navy:#123C69;
+  --navy-deep:#0B2545;
+  --cyan:#0AA6C9;
+  --cyan-soft:#E1F5FA;
+  --alert:#E4572E;
+  --ink:#22303E;
+  --ink-soft:#5B6B7B;
+  --line:#D8E2EC;
+  --ok:#2E9E6B;
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans TC',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);color:var(--ink);
+  font-size:16px;line-height:1.6;
+  padding-bottom:40px;
+}
+.num{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+
+/* ===== 頂部 ===== */
+header{
+  background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 55%,#175A8C 100%);
+  color:#fff;padding:22px 20px 62px;position:relative;overflow:hidden;
+}
+header::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 15%,rgba(10,166,201,.35),transparent 55%);
+  pointer-events:none;
+}
+.h-tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;padding:3px 12px;margin-bottom:10px}
+h1{font-size:26px;font-weight:900;line-height:1.3;position:relative;z-index:1}
+h1 .ai{color:#5FD9F2}
+.h-sub{font-size:14px;opacity:.85;margin-top:6px;position:relative;z-index:1}
+
+/* ===== 現在進行 sticky 卡 ===== */
+#nowCard{
+  margin:-42px 16px 14px;position:relative;z-index:5;
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:0 8px 24px rgba(11,37,69,.16);
+  padding:16px 18px;border-left:5px solid var(--cyan);
+}
+#nowCard .label{font-size:12px;font-weight:700;color:var(--cyan);letter-spacing:.15em}
+#nowCard .title{font-size:19px;font-weight:900;margin-top:2px}
+#nowCard .sub{font-size:13px;color:var(--ink-soft);margin-top:2px}
+#nowCard .count{font-size:13px;font-weight:700;color:var(--alert);margin-top:6px}
+
+/* ===== 區塊 ===== */
+main{padding:0 16px}
+section{margin-bottom:18px}
+.sec-title{
+  font-size:14px;font-weight:900;color:var(--navy);
+  letter-spacing:.12em;margin:22px 2px 10px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 2px 8px rgba(11,37,69,.06)}
+
+/* ===== 天氣 ===== */
+#weatherNow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+#weatherNow .temp{font-size:32px;font-weight:900;color:var(--navy)}
+#weatherNow .desc{font-size:14px;color:var(--ink-soft)}
+.w-scroll{display:flex;gap:6px;overflow-x:auto;margin-top:12px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.w-hour{flex:0 0 58px;text-align:center;background:var(--cyan-soft);border-radius:12px;padding:8px 4px}
+.w-hour .h{font-size:11px;color:var(--ink-soft)}
+.w-hour .i{font-size:18px;margin:2px 0}
+.w-hour .t{font-size:13px;font-weight:700}
+.w-hour .p{font-size:10px;color:var(--cyan)}
+.w-note{font-size:12px;color:var(--ink-soft);margin-top:8px}
+
+/* ===== 心電圖時間軸 ===== */
+.timeline{position:relative;padding-left:34px}
+.timeline::before{
+  content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;
+  background:repeating-linear-gradient(to bottom,var(--cyan) 0 6px,transparent 6px 11px);
+  opacity:.5;
+}
+.tl-item{position:relative;margin-bottom:12px}
+.tl-dot{
+  position:absolute;left:-30px;top:16px;width:14px;height:14px;border-radius:50%;
+  background:#fff;border:3px solid var(--navy);z-index:2;
+}
+.tl-item.done .tl-dot{background:var(--navy);border-color:var(--navy)}
+.tl-item.now .tl-dot{
+  background:var(--cyan);border-color:var(--cyan);
+  box-shadow:0 0 0 0 rgba(10,166,201,.5);
+  animation:pulse 1.6s ease-out infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(10,166,201,.55)}
+  70%{box-shadow:0 0 0 12px rgba(10,166,201,0)}
+  100%{box-shadow:0 0 0 0 rgba(10,166,201,0)}
+}
+@media (prefers-reduced-motion:reduce){.tl-item.now .tl-dot{animation:none}}
+.tl-card{
+  background:var(--card);border-radius:var(--radius);padding:13px 15px;
+  box-shadow:0 2px 8px rgba(11,37,69,.06);
+}
+.tl-item.now .tl-card{border:2px solid var(--cyan);box-shadow:0 4px 16px rgba(10,166,201,.2)}
+.tl-item.done .tl-card{opacity:.55}
+.tl-time{font-size:13px;font-weight:900;color:var(--cyan);letter-spacing:.03em}
+.tl-item.hl .tl-time{color:var(--alert)}
+.tl-title{font-size:16px;font-weight:700;margin-top:1px}
+.tl-desc{font-size:13px;color:var(--ink-soft);margin-top:3px}
+.tl-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:13px;font-weight:700;text-decoration:none;
+  padding:6px 13px;border-radius:999px;border:1.5px solid var(--navy);
+  color:var(--navy);background:#fff;
+}
+.btn.solid{background:var(--navy);color:#fff}
+.btn.cyan{border-color:var(--cyan);color:var(--cyan)}
+.badge{
+  display:inline-block;font-size:11px;font-weight:700;border-radius:6px;
+  padding:1px 7px;margin-left:6px;vertical-align:2px;
+}
+.badge.red{background:#FDEAE3;color:var(--alert)}
+.badge.blue{background:var(--cyan-soft);color:var(--cyan)}
+
+/* ===== 議程表 ===== */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--navy);color:#fff;font-weight:700;padding:8px 6px;text-align:left;font-size:12.5px}
+th:first-child{border-radius:8px 0 0 0}
+th:last-child{border-radius:0 8px 0 0}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#F6FAFC}
+td.t{white-space:nowrap;font-weight:700;color:var(--navy);font-size:12.5px}
+td.s{color:var(--ink-soft);font-size:12.5px}
+
+/* ===== 資訊列 ===== */
+.info-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.info-row:last-child{border-bottom:none}
+.info-row .k{flex:0 0 76px;font-weight:700;color:var(--navy)}
+.info-row .v{flex:1}
+.info-row .v a{color:var(--cyan);font-weight:700;text-decoration:none}
+
+/* ===== 清單 ===== */
+.chk{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.chk:last-child{border-bottom:none}
+.chk input{width:21px;height:21px;accent-color:var(--cyan);flex-shrink:0}
+.chk.on span{text-decoration:line-through;color:var(--ink-soft)}
+
+.foot{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:26px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="h-tag">2026.07.03（五）公務行程</span>
+  <h1>醫療<span class="ai">AI</span>新紀元・高雄一日行</h1>
+  <div class="h-sub">中華民國區域醫院協會｜阮綜合醫院 B棟10樓大禮堂</div>
+</header>
+
+<div id="nowCard">
+  <div class="label">● 現在</div>
+  <div class="title" id="nowTitle">載入中…</div>
+  <div class="sub" id="nowSub"></div>
+  <div class="count" id="nowCount"></div>
+</div>
+
+<main>
+
+<!-- 天氣 -->
+<div class="sec-title">高雄天氣</div>
+<section class="card">
+  <div id="weatherNow"><span class="temp num" id="wTemp">--°</span><span class="desc" id="wDesc">讀取中…</span></div>
+  <div class="w-scroll" id="wHours"></div>
+  <div class="w-note">📍 苓雅區・資料來源 Open-Meteo（需網路連線）</div>
+</section>
+
+<!-- 時間軸 -->
+<div class="sec-title">一日時間軸</div>
+<div class="timeline" id="timeline"></div>
+
+<!-- 活動議程 -->
+<div class="sec-title">活動議程 14:00–16:00</div>
+<section class="card" style="padding:12px">
+  <table>
+    <tr><th style="width:88px">時間</th><th>內容</th><th style="width:96px">主講者</th></tr>
+    <tr><td class="t num">14:00–14:10</td><td>致詞</td><td class="s">區協、阮綜合醫院</td></tr>
+    <tr><td class="t num">14:10–14:15</td><td>醫療 AI 新紀元</td><td class="s">陳鴻曜 院長</td></tr>
+    <tr><td class="t num">14:15–14:25</td><td>生成式 AI 系統架構及應用歷程</td><td class="s">資訊室 陳保慶 主任</td></tr>
+    <tr><td class="t num">14:25–14:40</td><td>AI 智能護理紀錄全攻略</td><td class="s">護理部 江秀珠 主任</td></tr>
+    <tr><td class="t num">14:40–14:50</td><td>AI 專師臨床病歷書寫</td><td class="s">專師組 吳諄怡 副組長</td></tr>
+    <tr><td class="t num">14:50–15:00</td><td>生成式 AI 於醫學教育之應用</td><td class="s">教研部 陳昱甫 主任</td></tr>
+    <tr><td class="t num">15:00–16:00</td><td colspan="2">院區實地參訪</td></tr>
+  </table>
+</section>
+
+<!-- 參訪項目 -->
+<div class="sec-title">院區實地參訪 15:00–16:00</div>
+<section class="card" style="padding:12px">
+  <table>
+    <tr><th style="width:66px">項目</th><th>內容</th><th>地點</th></tr>
+    <tr><td class="t">項目一</td><td>醫療 AI 實務應用</td><td class="s">10樓大禮堂（後）</td></tr>
+    <tr><td class="t">項目二</td><td>醫學教育 AI 輔助系統</td><td class="s">10樓大禮堂（後）</td></tr>
+    <tr><td class="t">項目三</td><td>護理生成式 AI 實務運用</td><td class="s">展示：10樓大教室<br>實作：11C、9C 病房</td></tr>
+  </table>
+</section>
+
+<!-- 交通與活動資訊 -->
+<div class="sec-title">重要資訊</div>
+<section class="card">
+  <div class="info-row"><div class="k">報到時間</div><div class="v"><b style="color:var(--alert)">13:45 起</b>（現場線上報到）</div></div>
+  <div class="info-row"><div class="k">活動地點</div><div class="v">阮綜合醫院 B棟10樓大禮堂<br><a href="https://www.google.com/maps/search/?api=1&query=高雄市苓雅區成功一路162號" target="_blank">高雄市苓雅區成功一路162號 📍</a></div></div>
+  <div class="info-row"><div class="k">去程高鐵</div><div class="v num">台中 09:25 → 左營 10:20</div></div>
+  <div class="info-row"><div class="k">回程高鐵</div><div class="v num">左營 18:00 → 台中 18:58</div></div>
+  <div class="info-row"><div class="k">台中停車</div><div class="v">🅿️ P1 立體停車場 50元/時、當日上限 350元（最方便）<br>💰 五都日出停車場 當日計次 120元，車牌辨識、步行約8–10分</div></div>
+  <div class="info-row"><div class="k">交通方式</div><div class="v">🚇 捷運紅線 左營(R16)→三多商圈(R8) 約20分＋步行約12分<br>🚕 計程車 左營→醫院 約25分（約 NT$300）</div></div>
+  <div class="info-row"><div class="k">聯絡人</div><div class="v">顏正婷 主任<br><a href="tel:0227423636">📞 (02)2742-3636</a>・<a href="mailto:rha89106@gmail.com">✉️ rha89106@gmail.com</a></div></div>
+  <div style="margin-top:12px"><a class="btn solid" id="icsBtn" href="#">📅 加入手機行事曆</a></div>
+</section>
+
+<!-- 檢查清單 -->
+<div class="sec-title">出發前檢查清單</div>
+<section class="card" id="checklist">
+  <label class="chk"><input type="checkbox" data-k="c1"><span>高鐵車票／App 電子票證</span></label>
+  <label class="chk"><input type="checkbox" data-k="c2"><span>識別證／名片</span></label>
+  <label class="chk"><input type="checkbox" data-k="c3"><span>行動電源、充電線</span></label>
+  <label class="chk"><input type="checkbox" data-k="c4"><span>筆記工具（記錄各院 AI 應用重點）</span></label>
+  <label class="chk"><input type="checkbox" data-k="c5"><span>悠遊卡／一卡通（搭捷運）</span></label>
+  <label class="chk"><input type="checkbox" data-k="c6"><span>雨具（依上方天氣預報決定）</span></label>
+</section>
+
+<div class="foot">※ 主辦單位保有調整變更之權利<br>頁面時間自動追蹤當前行程・清單勾選會自動儲存</div>
+</main>
+
+<script>
+/* ===== 行程資料（分鐘制，當日 2026/07/03）===== */
+const EVENT_DATE = "2026-07-03";
+const SCHEDULE = [
+  {s:"08:00", e:"08:35", title:"開車出發 🚗", desc:"龍井 → 高鐵台中站（約13–14km，台1線南下經大肚、王田；平常約25分，週五早尖峰預留35分）",
+   links:[{t:"🧭 導航到高鐵台中站",u:"https://www.google.com/maps/dir/?api=1&destination=高鐵台中站&travelmode=driving"}]},
+  {s:"08:35", e:"09:25", title:"停車・進站 🅿️", desc:"P1立體停車場 50元/時、當日上限350元；省錢可停站外「五都日出停車場」當日計次120元（車牌辨識，步行約8–10分）。停妥拍照記車位，取票過閘",
+   links:[{t:"📍 P1 立體停車場",u:"https://www.google.com/maps/search/?api=1&query=高鐵台中站P1停車場"},{t:"📍 五都日出停車場",u:"https://www.google.com/maps/search/?api=1&query=五都日出停車場+烏日"}]},
+  {s:"09:25", e:"10:20", title:"高鐵南下 🚄", desc:"台中 → 左營（55分），可先瀏覽議程重點", hl:true},
+  {s:"10:20", e:"10:40", title:"抵達左營・轉乘", desc:"捷運紅線 左營(R16)→三多商圈(R8)，或搭計程車前往市區",
+   links:[{t:"📍 三多商圈站",u:"https://www.google.com/maps/search/?api=1&query=捷運三多商圈站"}]},
+  {s:"10:40", e:"13:15", title:"午餐・自由時間 🍜", desc:"三多商圈周邊：大遠百、新光三越美食街，距醫院步行約12分",
+   links:[{t:"🔍 附近美食",u:"https://www.google.com/maps/search/?api=1&query=三多商圈+美食"}]},
+  {s:"13:15", e:"13:45", title:"步行前往阮綜合醫院", desc:"成功一路162號，預留緩衝時間",
+   links:[{t:"📍 阮綜合醫院",u:"https://www.google.com/maps/search/?api=1&query=高雄市苓雅區成功一路162號"}]},
+  {s:"13:45", e:"14:00", title:"報到 📋", desc:"B棟10樓大禮堂・現場線上報到", hl:true},
+  {s:"14:00", e:"15:00", title:"專題演講", desc:"醫療AI新紀元／生成式AI系統架構／AI護理紀錄／AI病歷書寫／醫學教育應用"},
+  {s:"15:00", e:"16:00", title:"院區實地參訪", desc:"醫療AI實務、醫學教育AI、護理生成式AI（11C／9C病房）"},
+  {s:"16:00", e:"17:00", title:"活動結束・緩衝 ☕", desc:"可與各院資訊室先進交流，或提早前往車站"},
+  {s:"17:00", e:"17:40", title:"返回左營高鐵站", desc:"三多商圈(R8)→左營(R16) 捷運約20分，或計程車約25分",
+   links:[{t:"📍 高鐵左營站",u:"https://www.google.com/maps/search/?api=1&query=高鐵左營站"}]},
+  {s:"17:40", e:"18:00", title:"左營站候車", desc:"取票、過閘前往月台"},
+  {s:"18:00", e:"18:58", title:"高鐵北返 🚄", desc:"左營 18:00 → 台中 18:58", hl:true},
+  {s:"18:58", e:"19:35", title:"取車返家 🚗", desc:"P1 取車 → 返回龍井（約30分），今日辛苦了！",
+   links:[{t:"🧭 導航回龍井",u:"https://www.google.com/maps/dir/?api=1&destination=台中市龍井區&travelmode=driving"}]},
+];
+const toMin = t => { const [h,m]=t.split(":").map(Number); return h*60+m; };
+
+/* ===== 渲染時間軸 ===== */
+const tlEl = document.getElementById("timeline");
+tlEl.innerHTML = SCHEDULE.map((it,i)=>`
+  <div class="tl-item${it.hl?" hl":""}" id="tl${i}">
+    <div class="tl-dot"></div>
+    <div class="tl-card">
+      <div class="tl-time num">${it.s} – ${it.e}</div>
+      <div class="tl-title">${it.title}</div>
+      <div class="tl-desc">${it.desc}</div>
+      ${it.links?`<div class="tl-links">${it.links.map(l=>`<a class="btn cyan" href="${l.u}" target="_blank">${l.t}</a>`).join("")}</div>`:""}
+    </div>
+  </div>`).join("");
+
+/* ===== 現在進行追蹤 ===== */
+function fmtDur(min){
+  if(min>=60){const h=Math.floor(min/60),m=min%60;return m?`${h} 小時 ${m} 分`:`${h} 小時`;}
+  return `${min} 分鐘`;
+}
+function update(){
+  const now = new Date();
+  const y=now.getFullYear(),mo=String(now.getMonth()+1).padStart(2,"0"),d=String(now.getDate()).padStart(2,"0");
+  const today=`${y}-${mo}-${d}`;
+  const nowMin = now.getHours()*60+now.getMinutes();
+  const t=document.getElementById("nowTitle"),s=document.getElementById("nowSub"),c=document.getElementById("nowCount");
+
+  SCHEDULE.forEach((it,i)=>{
+    const el=document.getElementById("tl"+i);
+    el.classList.remove("now","done");
+    if(today===EVENT_DATE){
+      if(nowMin>=toMin(it.e)) el.classList.add("done");
+      else if(nowMin>=toMin(it.s)) el.classList.add("now");
+    }
+  });
+
+  if(today<EVENT_DATE){
+    const dep=new Date(EVENT_DATE+"T08:00:00");
+    const diff=Math.floor((dep-now)/60000);
+    t.textContent="行程尚未開始";
+    s.textContent="7/3（五）08:00 從龍井開車出發";
+    c.textContent="距離出發還有 "+fmtDur(diff);
+    return;
+  }
+  if(today>EVENT_DATE){
+    t.textContent="行程已結束 ✅"; s.textContent="感謝參與「醫療AI新紀元」活動"; c.textContent=""; return;
+  }
+  // 當日
+  let cur=-1;
+  for(let i=0;i<SCHEDULE.length;i++){
+    if(nowMin>=toMin(SCHEDULE[i].s)&&nowMin<toMin(SCHEDULE[i].e)){cur=i;break;}
+  }
+  if(cur>=0){
+    const it=SCHEDULE[cur];
+    t.textContent=it.title;
+    s.textContent=`${it.s} – ${it.e}・${it.desc}`;
+    const next=SCHEDULE[cur+1];
+    c.textContent=next?`下一項：${next.s} ${next.title}（${fmtDur(toMin(next.s)-nowMin)}後）`:"";
+    const el=document.getElementById("tl"+cur);
+  }else if(nowMin<toMin(SCHEDULE[0].s)){
+    t.textContent="今天出發！";
+    s.textContent="08:00 開車 → 08:35 停車進站 → 09:25 高鐵";
+    c.textContent="距離開車出發還有 "+fmtDur(toMin("08:00")-nowMin);
+  }else{
+    t.textContent="行程已結束 ✅"; s.textContent="今日辛苦了"; c.textContent="";
+  }
+}
+update();
+setInterval(update,30000);
+
+/* ===== 天氣（高雄苓雅）===== */
+const WCODE={0:["☀️","晴"],1:["🌤","多雲時晴"],2:["⛅","多雲"],3:["☁️","陰"],45:["🌫","霧"],48:["🌫","霧"],
+ 51:["🌦","毛毛雨"],53:["🌦","小雨"],55:["🌧","小雨"],61:["🌧","小雨"],63:["🌧","中雨"],65:["🌧","大雨"],
+ 80:["🌦","陣雨"],81:["🌧","陣雨"],82:["⛈","強陣雨"],95:["⛈","雷雨"],96:["⛈","雷雨"],99:["⛈","雷雨"]};
+fetch("https://api.open-meteo.com/v1/forecast?latitude=22.6236&longitude=120.3130&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&timezone=Asia%2FTaipei&start_date="+EVENT_DATE+"&end_date="+EVENT_DATE)
+.then(r=>r.json()).then(j=>{
+  if(j.current){
+    document.getElementById("wTemp").textContent=Math.round(j.current.temperature_2m)+"°C";
+    const w=WCODE[j.current.weather_code]||["🌡","--"];
+    document.getElementById("wDesc").textContent=w[0]+" "+w[1]+"（目前）";
+  }
+  const H=j.hourly, box=document.getElementById("wHours");
+  let html="";
+  for(let i=0;i<H.time.length;i++){
+    const hr=parseInt(H.time[i].slice(11,13));
+    if(hr<9||hr>19)continue;
+    const w=WCODE[H.weather_code[i]]||["🌡",""];
+    html+=`<div class="w-hour"><div class="h num">${hr}時</div><div class="i">${w[0]}</div><div class="t num">${Math.round(H.temperature_2m[i])}°</div><div class="p num">💧${H.precipitation_probability[i]}%</div></div>`;
+  }
+  box.innerHTML=html;
+}).catch(()=>{document.getElementById("wDesc").textContent="離線中，無法取得天氣";});
+
+/* ===== 檢查清單 localStorage ===== */
+document.querySelectorAll("#checklist input").forEach(cb=>{
+  const k="kh0703_"+cb.dataset.k;
+  try{ if(localStorage.getItem(k)==="1"){cb.checked=true;cb.closest(".chk").classList.add("on");} }catch(e){}
+  cb.addEventListener("change",()=>{
+    cb.closest(".chk").classList.toggle("on",cb.checked);
+    try{localStorage.setItem(k,cb.checked?"1":"0");}catch(e){}
+  });
+});
+
+/* ===== ICS 行事曆 ===== */
+document.getElementById("icsBtn").addEventListener("click",function(e){
+  e.preventDefault();
+  const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//trip//TW","BEGIN:VEVENT",
+  "UID:medai20260703@trip","DTSTART;TZID=Asia/Taipei:20260703T134500","DTEND;TZID=Asia/Taipei:20260703T160000",
+  "SUMMARY:醫療AI新紀元活動（區域醫院協會）",
+  "LOCATION:阮綜合醫院 B棟10樓大禮堂（高雄市苓雅區成功一路162號）",
+  "DESCRIPTION:13:45報到\\n高鐵：台中09:25→左營10:20／左營18:00→台中18:58\\n聯絡人：顏正婷主任 (02)2742-3636",
+  "BEGIN:VALARM","TRIGGER:-PT30M","ACTION:DISPLAY","DESCRIPTION:提醒","END:VALARM",
+  "END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a=document.createElement("a");
+  a.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
+  a.download="醫療AI新紀元_0703.ics";
+  document.body.appendChild(a);a.click();a.remove();
+});
+</script>
+</body>
+</html>
