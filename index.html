@@ -243,7 +243,7 @@ td.s{color:var(--ink-soft);font-size:12.5px}
   <div class="info-row"><div class="k">報到時間</div><div class="v"><b style="color:var(--alert)">13:45 起</b>（現場線上報到）</div></div>
   <div class="info-row"><div class="k">活動地點</div><div class="v">阮綜合醫院 B棟10樓大禮堂<br><a href="https://www.google.com/maps/search/?api=1&query=高雄市苓雅區成功一路162號" target="_blank">高雄市苓雅區成功一路162號 📍</a></div></div>
   <div class="info-row"><div class="k">去程高鐵</div><div class="v num">台中 09:25 → 左營 10:20</div></div>
-  <div class="info-row"><div class="k">回程高鐵</div><div class="v num">左營 18:00 → 台中 18:58</div></div>
+  <div class="info-row"><div class="k">回程高鐵</div><div class="v num">左營 16:55 → 台中 17:37 <span class="badge red">活動一結束就出發</span></div></div>
   <div class="info-row"><div class="k">台中停車</div><div class="v">🅿️ P1 立體停車場 50元/時、當日上限 350元（最方便）<br>💰 五都日出停車場 當日計次 120元，車牌辨識、步行約8–10分</div></div>
   <div class="info-row"><div class="k">交通方式</div><div class="v">🚇 捷運紅線 左營(R16)→三多商圈(R8) 約20分＋步行約12分<br>🚕 計程車 左營→醫院 約25分（約 NT$300）</div></div>
   <div class="info-row"><div class="k">聯絡人</div><div class="v">顏正婷 主任<br><a href="tel:0227423636">📞 (02)2742-3636</a>・<a href="mailto:rha89106@gmail.com">✉️ rha89106@gmail.com</a></div></div>
@@ -324,12 +324,11 @@ const SCHEDULE = [
   {s:"13:45", e:"14:00", title:"報到 📋", desc:"B棟10樓大禮堂・現場線上報到", hl:true},
   {s:"14:00", e:"15:00", title:"專題演講", desc:"醫療AI新紀元／生成式AI系統架構／AI護理紀錄／AI病歷書寫／醫學教育應用"},
   {s:"15:00", e:"16:00", title:"院區實地參訪", desc:"醫療AI實務、醫學教育AI、護理生成式AI（11C／9C病房）"},
-  {s:"16:00", e:"17:00", title:"活動結束・緩衝 ☕", desc:"可與各院資訊室先進交流，或提早前往車站"},
-  {s:"17:00", e:"17:40", title:"返回左營高鐵站", desc:"三多商圈(R8)→左營(R16) 捷運約20分，或計程車約25分",
-   links:[{t:"📍 高鐵左營站",u:"https://www.google.com/maps/search/?api=1&query=高鐵左營站"}]},
-  {s:"17:40", e:"18:00", title:"左營站候車", desc:"取票、過閘前往月台"},
-  {s:"18:00", e:"18:58", title:"高鐵北返 🚄", desc:"左營 18:00 → 台中 18:58", hl:true},
-  {s:"18:58", e:"19:35", title:"取車返家 🚗", desc:"P1 取車 → 返回龍井（約30分），今日辛苦了！",
+  {s:"16:00", e:"16:35", title:"直奔左營高鐵站 🚕", desc:"⚠️ 回程班次緊湊，活動一結束建議直接搭計程車（醫院→左營約25分）；搭捷運需步行12分＋車程20分，若參訪延後恐來不及", hl:true,
+   links:[{t:"📍 高鐵左營站",u:"https://www.google.com/maps/search/?api=1&query=高鐵左營站"},{t:"🚕 叫車 55688",u:"tel:55688"}]},
+  {s:"16:35", e:"16:55", title:"左營站候車", desc:"取票、過閘前往月台，還有時間買杯咖啡 ☕"},
+  {s:"16:55", e:"17:37", title:"高鐵北返 🚄", desc:"左營 16:55 → 台中 17:37", hl:true},
+  {s:"17:37", e:"18:15", title:"取車返家 🚗", desc:"P1 取車 → 返回龍井（約30分），趕得上回家吃晚餐 🍚",
    links:[{t:"🧭 導航回龍井",u:"https://www.google.com/maps/dir/?api=1&destination=台中市龍井區&travelmode=driving"}]},
 ];
 const toMin = t => { const [h,m]=t.split(":").map(Number); return h*60+m; };
@@ -368,11 +367,11 @@ function update(){
     }
   });
 
-  /* 回程趕車提醒：16:00–18:00 顯示 */
+  /* 回程趕車提醒：14:30–16:55 顯示（16:55=1015分） */
   const rush=document.getElementById("rushChip");
-  if(today===EVENT_DATE && nowMin>=960 && nowMin<1080){
+  if(today===EVENT_DATE && nowMin>=870 && nowMin<1015){
     rush.style.display="block";
-    rush.textContent="⏰ 回程高鐵 18:00 發車，剩 "+fmtDur(1080-nowMin)+"・市區→左營請預留約40分";
+    rush.textContent="⏰ 回程高鐵 16:55 發車，剩 "+fmtDur(1015-nowMin)+"・16:00 一散場就搭計程車（約25分）";
   }else{rush.style.display="none";}
 
   if(today<EVENT_DATE){
@@ -448,7 +447,7 @@ document.getElementById("icsBtn").addEventListener("click",function(e){
   "UID:medai20260703@trip","DTSTART;TZID=Asia/Taipei:20260703T134500","DTEND;TZID=Asia/Taipei:20260703T160000",
   "SUMMARY:醫療AI新紀元活動（區域醫院協會）",
   "LOCATION:阮綜合醫院 B棟10樓大禮堂（高雄市苓雅區成功一路162號）",
-  "DESCRIPTION:13:45報到\\n高鐵：台中09:25→左營10:20／左營18:00→台中18:58\\n聯絡人：顏正婷主任 (02)2742-3636",
+  "DESCRIPTION:13:45報到\\n高鐵：台中09:25→左營10:20／左營16:55→台中17:37\\n聯絡人：顏正婷主任 (02)2742-3636",
   "BEGIN:VALARM","TRIGGER:-PT30M","ACTION:DISPLAY","DESCRIPTION:提醒","END:VALARM",
   "END:VEVENT","END:VCALENDAR"].join("\r\n");
   const a=document.createElement("a");
